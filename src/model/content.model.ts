@@ -35,7 +35,8 @@ const contentSchema = new Schema<IContent>({
     },
     user:{
         type:Schema.Types.ObjectId,
-        ref:"user"
+        ref:"user",
+        required:true
     }
 })
 
