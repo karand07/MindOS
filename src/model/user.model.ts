@@ -2,7 +2,6 @@ import {Schema,model} from "mongoose";
 
 interface IUser{
     username:String,
-    email:String,
     password:String
 }
 
@@ -17,13 +16,6 @@ const userSchema = new Schema<IUser>({
         type:String,
         unique:true,
         trim:true
-    },
-    email:{
-        type:String,
-        unique:true,
-        required:true,
-        trim:true,
-        toLowerCase:true
     }
 })
 
