@@ -1,10 +1,10 @@
-import { Router } from "express";
+import { Router, type Request, type Response } from "express";
 import { UserSchema } from "./auth.util.js";
 import { userModel } from "../../model/user.model.js";
 import bcrypt from 'bcrypt'
 const SignupRoute = Router();
 
-SignupRoute.post('/signup',async (req,res) =>{
+SignupRoute.post('/signup',async (req:Request,res:Response) =>{
     try{
     const signupData = UserSchema.safeParse(req.body)
     

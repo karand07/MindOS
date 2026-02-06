@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, type Request, type Response } from "express";
 import jwt  from "jsonwebtoken";
 import bcrypt from 'bcrypt'
 import { UserSchema } from "./auth.util.js";
@@ -12,7 +12,7 @@ const USER_SECRET :string= process.env.USER_SECRET
 
 const SignInRoute = Router();
 
-SignInRoute.post('/signin',async (req,res) => {
+SignInRoute.post('/signin',async (req:Request,res:Response) => {
     try {
         const signinData = UserSchema.safeParse(req.body)
 
