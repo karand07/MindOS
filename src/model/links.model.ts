@@ -17,4 +17,4 @@ const linkSchema = new Schema <ILink>({
     }
 })
 
-const linkModel = model<ILink>("link",linkSchema)
+export const linkModel = model<ILink>("link",linkSchema)
