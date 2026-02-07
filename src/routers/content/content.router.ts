@@ -68,7 +68,8 @@ contentRoute.get('/get',
 
 contentRoute.put('/update/:contentId',
     async (req:Request,res:Response) => {
-    const userId =req.userId as string;
+        try {
+            const userId =req.userId as string;
     const contentId = req.params.contentId
     if(!userId){
         return res.status(400).json({
@@ -105,5 +106,38 @@ contentRoute.put('/update/:contentId',
         message:"content updated successfully",
         updateContent
     })
+        } catch (error) {
+            return res.status(500).json({
+                message:"internal server error",
+                error:error
+            })
+        }
+    
+})
+
+contentRoute.delete('/delete/:contentId',
+    async (req:Request,res:Response) => {
+    try {
+        const contentId = req.params.contentId
+        const userId = req.userId as string
+
+        if(!userId){
+            return res.status(400).json({
+                message:"unauthorized user"
+            })
+        }
+
+        const deleteContent = await contentModel.findOneAndDelete({
+            user:userId,
+            _id:contentId
+        })
+
+        res.status(200).json({
+            message:"content deleted successfully",
+            contentId
+        })
+    } catch (error) {
+        
+    }
 })
 export {contentRoute}

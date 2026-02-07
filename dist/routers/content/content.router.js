@@ -55,38 +55,67 @@ contentRoute.get('/get', async (req, res) => {
     }
 });
 contentRoute.put('/update/:contentId', async (req, res) => {
-    const userId = req.userId;
-    const contentId = req.params.contentId;
-    if (!userId) {
-        return res.status(400).json({
-            message: "unauthorizer user"
+    try {
+        const userId = req.userId;
+        const contentId = req.params.contentId;
+        if (!userId) {
+            return res.status(400).json({
+                message: "unauthorizer user"
+            });
+        }
+        const contentData = partialcontent.safeParse(req.body);
+        if (!contentData.success) {
+            return res.status(400).json({
+                error: contentData.error
+            });
+        }
+        const { link, type, title, tags } = contentData.data;
+        const updateContent = await contentModel.findOneAndUpdate({
+            user: userId,
+            _id: contentId
+        }, {
+            link,
+            title,
+            tags,
+            type
+        }, { new: true });
+        if (!updateContent) {
+            return res.status(400).json({
+                message: "content not found Or Unauthrized user"
+            });
+        }
+        res.status(201).json({
+            message: "content updated successfully",
+            updateContent
         });
     }
-    const contentData = partialcontent.safeParse(req.body);
-    if (!contentData.success) {
-        return res.status(400).json({
-            error: contentData.error
+    catch (error) {
+        return res.status(500).json({
+            message: "internal server error",
+            error: error
         });
     }
-    const { link, type, title, tags } = contentData.data;
-    const updateContent = await contentModel.findOneAndUpdate({
-        user: userId,
-        _id: contentId
-    }, {
-        link,
-        title,
-        tags,
-        type
-    }, { new: true });
-    if (!updateContent) {
-        return res.status(400).json({
-            message: "content not found Or Unauthrized user"
+});
+contentRoute.delete('/delete/:contentId', async (req, res) => {
+    try {
+        const contentId = req.params.contentId;
+        const userId = req.userId;
+        if (!userId) {
+            return res.status(400).json({
+                message: "unauthorized user"
+            });
+        }
+        const deleteContent = await contentModel.findOneAndDelete({
+            user: userId,
+            _id: contentId
+        });
+        res.status(200).json({
+            message: "content deleted successfully",
+            contentId
         });
     }
-    res.status(201).json({
-        message: "content updated successfully",
-        updateContent
-    });
+    catch (error) {
+    }
 });
 export { contentRoute };
 //# sourceMappingURL=content.router.js.map
