@@ -2,12 +2,11 @@ import { Router, type Request, type Response } from "express";
 import userAuth from "../../middleware/user.middleware.js";
 import { contentModel } from "../../model/content.model.js";
 import { contentSchema } from "./content.util.js";
-import { json } from "zod";
 
 const contentRoute = Router();
 
 contentRoute.use(userAuth);
-
+const partialcontent = contentSchema.partial()
 contentRoute.post
 ('/post',
     async (req:Request,res:Response) => {
@@ -65,5 +64,46 @@ contentRoute.get('/get',
             error:error
         })
     }
+})
+
+contentRoute.put('/update/:contentId',
+    async (req:Request,res:Response) => {
+    const userId =req.userId as string;
+    const contentId = req.params.contentId
+    if(!userId){
+        return res.status(400).json({
+            message:"unauthorizer user"
+        })
+    }
+    const contentData = partialcontent.safeParse(req.body)
+
+    if(!contentData.success){
+        return res.status(400).json({
+            error:contentData.error
+        })
+    }
+
+    const {link,type,title,tags} = contentData.data
+
+    const updateContent = await contentModel.findOneAndUpdate({
+        user:userId,
+        _id:contentId
+    },{
+        link,
+        title,
+        tags,
+        type
+    },{new:true})
+    
+    if(!updateContent){
+        return res.status(400).json({
+            message:"content not found Or Unauthrized user"
+        })
+    }
+
+    res.status(201).json({
+        message:"content updated successfully",
+        updateContent
+    })
 })
 export {contentRoute}
