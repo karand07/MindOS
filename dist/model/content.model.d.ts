@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-declare enum LinkTypes {
+export declare enum LinkTypes {
     TWEET = "TWEET",
     YOUTUBE = "YOUTUBE",
     BLOG = "BLOG",

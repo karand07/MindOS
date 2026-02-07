@@ -1,5 +1,5 @@
 import { Schema, model, Types } from "mongoose";
-var LinkTypes;
+export var LinkTypes;
 (function (LinkTypes) {
     LinkTypes["TWEET"] = "TWEET";
     LinkTypes["YOUTUBE"] = "YOUTUBE";

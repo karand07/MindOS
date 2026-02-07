@@ -1,6 +1,6 @@
 import {Schema , model, Types} from "mongoose";
 
-enum LinkTypes{
+export enum LinkTypes{
     TWEET="TWEET",
     YOUTUBE="YOUTUBE",
     BLOG="BLOG",
