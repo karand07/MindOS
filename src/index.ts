@@ -11,8 +11,7 @@ const port=3000;
 const app = express()
 const mongoUrl=process.env.MONGO_URL || ''
 app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST"]
+  origin: "*"
 }));
 
 app.use(express.json())

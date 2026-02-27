@@ -18,8 +18,7 @@ SignInRoute.post('/signin',async (req:Request,res:Response) => {
 
     if(!signinData.success){
         return res.status(400).json({
-            message:"Validation Failed",
-            error:signinData.error
+            message: signinData.error.issues[0]?.message || "Invalid input"
         })
     }
 
