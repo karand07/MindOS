@@ -13,8 +13,7 @@ SignInRoute.post('/signin', async (req, res) => {
         const signinData = UserSchema.safeParse(req.body);
         if (!signinData.success) {
             return res.status(400).json({
-                message: "Validation Failed",
-                error: signinData.error
+                message: signinData.error.issues[0]?.message || "Invalid input"
             });
         }
         const { username, password } = signinData.data;

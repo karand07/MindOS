@@ -8,8 +8,7 @@ SignupRoute.post('/signup', async (req, res) => {
         const signupData = UserSchema.safeParse(req.body);
         if (!signupData.success) {
             return res.status(400).json({
-                message: "Validation failed",
-                error: signupData.error
+                message: signupData.error.issues[0]?.message || "Invalid input"
             });
         }
         const { username, password } = signupData.data;
