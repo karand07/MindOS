@@ -8,89 +8,115 @@ import { userModel } from "../../model/user.model.js";
 const linkRoute = Router();
 
 
-linkRoute.post('/share',
-    userAuth,
-    async (req:Request,res:Response) => {
-        try {
-            const userId = req.userId
-            if(!userId){
-                return res.status(400).json({
-                    message:"unautharised user"
-                })
-            }
-            const share = req.body.share;
+linkRoute.post("/share",
+     userAuth,
+      async (req: Request, res: Response) => {
 
-            if (share) {
-                const url = linkUrl(10)
-                if(!url){
-                    return res.status(404).json({
-                        message:"url generation failed"
-                    })
-                }
-                await linkModel.create({
-                    hash:url,
-                    user:userId
-                })
-                res.status(201).json({
-                    message:"brain sharing enabled",
-                    url:url
-                })
-            }else{
-                await linkModel.deleteOne({
-                    user:userId
-                })
-            }
+    try {
 
-        } catch (error) {
-            return res.status(500).json({
-                message:"internal server error",
-                error:error
+        const userId = req.userId
+        const share = req.body.share
+
+        if (!userId) {
+            return res.status(401).json({
+                message: "unauthorised user"
             })
         }
-    }
-)
 
-linkRoute.get('/:share',
-    async (req:Request,res:Response) => {
-        try {
-            const url = req.params.share;
-            if(!url){
-                return res.status(400).json({
-                    message:"url not found"
+        if (share) {
+
+            const existingLink = await linkModel.findOne({
+                user: userId
+            })
+
+            if (existingLink) {
+                return res.status(200).json({
+                    message: "brain sharing already enabled",
+                    url: existingLink.hash
                 })
             }
-            const link = await linkModel.findOne({
-                hash:url
+
+            const url = linkUrl(10)
+
+            await linkModel.create({
+                hash: url,
+                user: userId
             })
-            if(!link){
-                return res.status(400).json({
-                    message:"invalid url"
-                })
-            }
-            const content = await contentModel.find({
-                user:link.user
+
+            return res.status(201).json({
+                message: "brain sharing enabled",
+                url: url
             })
-            const username = await userModel.findOne({
-                _id:link.user
+
+        } else {
+
+            await linkModel.deleteOne({
+                user: userId
             })
-            if (!username) {
-                return res.status(400).json({
-                    message:"invalid link user not found"
-                })
-            }
-            if (!content) {
-                return res.json({
-                    message:"no content found"
-                })
-            }
-            res.status(201).json({
-                username,
-                content
+
+            return res.status(200).json({
+                message: "brain sharing disabled"
             })
-        } catch (error) {
-            
         }
+
+    } catch (error) {
+
+        return res.status(500).json({
+            message: "internal server error",
+            error
+        })
     }
-)
+
+})
+
+linkRoute.get("/:share", 
+    async (req: Request, res: Response) => {
+
+    try {
+
+        const url = req.params.share
+        if(!url){
+            return res.status(400).json({
+                message: "share url is required"
+            })
+        }
+        const link = await linkModel.findOne({
+            hash: url
+        })
+
+        if (!link) {
+            return res.status(410).json({
+                message: "shared link invalid or expired"
+            })
+        }
+
+        const content = await contentModel.find({
+            user: link.user
+        })
+
+        const username = await userModel.findOne({
+            _id: link.user
+        })
+
+        if (!username) {
+            return res.status(404).json({
+                message: "user not found"
+            })
+        }
+
+        return res.status(200).json({
+            username,
+            content
+        })
+
+    } catch (error) {
+
+        return res.status(500).json({
+            message: "internal server error",
+            error
+        })
+    }
+
+})
 
 export{linkRoute}
