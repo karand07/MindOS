@@ -7,7 +7,7 @@ import { SignInRoute } from './routers/auth/signin.route.js';
 import { contentRoute } from './routers/content/content.router.js';
 import { linkRoute } from './routers/link/link.route.js';
 
-const port=3000;
+const port=process.env.PORT;
 const app = express()
 const mongoUrl=process.env.MONGO_URL || ''
 app.use(cors(
