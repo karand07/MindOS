@@ -10,7 +10,7 @@ interface IContent {
     link: String;
     type: LinkTypes;
     title: String;
-    tags: Types.ObjectId[];
+    tags: string[];
     user: Types.ObjectId;
 }
 export declare const contentModel: import("mongoose").Model<IContent, {}, {}, {}, import("mongoose").Document<unknown, {}, IContent, {}, import("mongoose").DefaultSchemaOptions> & IContent & {

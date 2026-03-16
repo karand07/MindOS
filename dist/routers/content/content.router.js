@@ -19,7 +19,7 @@ contentRoute.post('/post', async (req, res) => {
             link,
             title,
             type,
-            tags,
+            tags: tags ?? [],
             user: userId
         });
         res.status(200).json({

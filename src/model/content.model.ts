@@ -12,7 +12,7 @@ interface IContent{
     link:String,
     type:LinkTypes,
     title:String,
-    tags:Types.ObjectId[],
+    tags:string[],
     user:Types.ObjectId
 }
 const contentSchema = new Schema<IContent>({
@@ -30,8 +30,8 @@ const contentSchema = new Schema<IContent>({
         required:true
     },
     tags:{
-        type:[Schema.Types.ObjectId],
-        ref:"tag"
+        type:[String],
+        default:[]
     },
     user:{
         type:Schema.Types.ObjectId,

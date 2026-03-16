@@ -26,13 +26,13 @@ contentRoute.post
         link,
         title,
         type,
-        tags,
-        user:userId
-    })
+        tags:tags ?? [],
+        user: userId
+    }) ;
 
     res.status(200).json({
-        message:"content created successfully",
-        id:content._id
+        message: "content created successfully",
+        id: content._id
     })
 
     } catch (error) {

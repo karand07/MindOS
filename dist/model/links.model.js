@@ -7,8 +7,12 @@ const linkSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: "user",
+        unique: true,
         required: true
     }
+}, {
+    timestamps: true
 });
+linkSchema.index({ createdAt: 1 }, { expireAfterSeconds: 3600 });
 export const linkModel = model("link", linkSchema);
 //# sourceMappingURL=links.model.js.map
